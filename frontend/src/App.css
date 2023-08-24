@@ -22,3 +22,20 @@
   text-align: center;
   color: #fff;
 }
+
+.inputBox {
+  padding: 7px;
+  display: block;
+  border: 1px solid skyblue;
+  width: 300px;
+  margin: 20px;
+}
+
+.signup {
+  margin: 20px;
+  width: 150px;
+  padding: 10px;
+  background-color: blueviolet;
+  cursor: pointer;
+  border: solid 1px;
+}
