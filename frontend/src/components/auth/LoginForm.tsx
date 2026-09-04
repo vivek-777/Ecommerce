@@ -8,9 +8,8 @@ import Button from "@/components/ui/Button/Button";
 import FormField from "@/components/ui/FormField/FormField";
 import Input from "@/components/ui/Input/Input";
 
+import { login } from "@/services/auth.service";
 import { loginSchema, LoginFormData } from "@/schemas/auth";
-
-// import { login } from "@/services/auth.service";
 
 import styles from "./AuthForm.module.css";
 
@@ -19,18 +18,17 @@ const LoginForm = () => {
     register,
     handleSubmit,
     formState: { errors, isSubmitting }
-  } = useForm<LoginFormData>({
-    resolver: zodResolver(loginSchema),
-    mode: "onBlur"
-  });
+  } = useForm<LoginFormData>({ resolver: zodResolver(loginSchema), mode: "onBlur" });
 
-  const onSubmit = async (data: LoginFormData) => {
-    try {
-    //   await login(data);
-    } catch (error) {
-      console.error("Login error:", error);
-    }
-  };
+    const onSubmit = async (data: LoginFormData) => {
+        try {
+            const response = await login(data);
+
+            console.log("Login successful", response);
+        } catch (error) {
+            console.error(error);
+        }
+    };
 
   return (
     <main className={styles.container}>

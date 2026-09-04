@@ -20,10 +20,7 @@ const SignupForm = () => {
     register,
     handleSubmit,
     formState: { errors, isSubmitting },
-  } = useForm<SignupFormData>({
-    resolver: zodResolver(signupSchema),
-    mode: "onBlur",
-  });
+  } = useForm<SignupFormData>({ resolver: zodResolver(signupSchema), mode: "onBlur" });
 
   const onSubmit = async (data: SignupFormData) => {
     console.log("Signup data:", data);
