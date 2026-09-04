@@ -5,7 +5,13 @@ import type {
 } from "react";
 
 
-export type ButtonVariant = "primary" | "secondary";
+export type ButtonVariant =
+  | "primary"
+  | "secondary"
+  | "danger"
+  | "outline"
+  | "ghost";
+  
 export type ButtonSize = "small" | "medium" | "large";
 
 

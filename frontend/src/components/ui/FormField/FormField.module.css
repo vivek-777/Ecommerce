@@ -1,0 +1,19 @@
+.field {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+}
+
+.label {
+    font-size: 14px;
+    font-weight: 500;
+}
+
+.required {
+    margin-left: 4px;
+}
+
+.error {
+    margin: 0;
+    font-size: 13px;
+}

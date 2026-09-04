@@ -1,9 +1,5 @@
-"use client";
+import LoginForm from "@/components/auth/LoginForm";
 
-import { useState } from "react"
-
-const loginPage = () => {
-
+export default function LoginPage() {
+  return <LoginForm />;
 }
-
-export default loginPage
