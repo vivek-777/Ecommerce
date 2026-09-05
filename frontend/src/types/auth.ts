@@ -21,5 +21,15 @@ export interface LoginResponse {
 }
 
 export interface SignupResponse {
+  success: boolean;
+  message: string;
+  data: {
     user: User;
+  };
+}
+export interface GetMeResponse {
+  success: boolean;
+  data: {
+    user: User;
+  };
 }

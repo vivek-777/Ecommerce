@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 
@@ -14,6 +15,7 @@ import {
 } from "@/schemas/auth";
 
 import styles from "./AuthForm.module.css";
+import { signup } from "@/services/auth.service";
 
 const SignupForm = () => {
   const {
@@ -21,11 +23,22 @@ const SignupForm = () => {
     handleSubmit,
     formState: { errors, isSubmitting },
   } = useForm<SignupFormData>({ resolver: zodResolver(signupSchema), mode: "onBlur" });
+  const router = useRouter();
 
   const onSubmit = async (data: SignupFormData) => {
-    console.log("Signup data:", data);
+    try {
+      const response = await signup({
+        name: data.name,
+        email: data.email,
+        password: data.password,
+        confirmPassword: data.confirmPassword
+      });
+      console.log("Signup successful:", response);
 
-    // API call will be added later.
+      router.push("/login");
+    } catch (error) {
+      console.error("Signup failed:", error);
+    }
   };
 
   return (

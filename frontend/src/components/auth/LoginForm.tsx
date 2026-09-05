@@ -1,6 +1,7 @@
 "use client";
 
-import Link from "next/dist/client/link";
+import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 
@@ -19,12 +20,14 @@ const LoginForm = () => {
     handleSubmit,
     formState: { errors, isSubmitting }
   } = useForm<LoginFormData>({ resolver: zodResolver(loginSchema), mode: "onBlur" });
+  const router = useRouter();
 
     const onSubmit = async (data: LoginFormData) => {
         try {
             const response = await login(data);
 
             console.log("Login successful", response);
+            router.push("/dashboard");
         } catch (error) {
             console.error(error);
         }
