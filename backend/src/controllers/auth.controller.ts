@@ -1,8 +1,4 @@
-import type {
-  Request,
-  Response,
-  NextFunction,
-} from "express";
+import type { Request, Response, NextFunction } from "express";
 
 import * as authService from "../services/auth.service.js";
 import { AppError } from "../errors/AppError.js";
@@ -29,19 +25,8 @@ export async function signup(
   try {
     const result = await authService.signup(req.body);
 
-    res.cookie("accessToken", result.accessToken, {
-      httpOnly: true,
-      secure: process.env.NODE_ENV === "production",
-      sameSite: "lax",
-      maxAge: 15 * 60 * 1000,
-    });
-
-    res.cookie("refreshToken", result.refreshToken, {
-      httpOnly: true,
-      secure: process.env.NODE_ENV === "production",
-      sameSite: "lax",
-      maxAge: 7 * 24 * 60 * 60 * 1000,
-    });
+    res.cookie("accessToken", result.accessToken, accessTokenCookieOptions);
+    res.cookie("refreshToken", result.refreshToken, refreshTokenCookieOptions);
 
     return res.status(201).json({
       success: true,
@@ -63,17 +48,8 @@ export async function login(
   try {
     const result = await authService.login(req.body);
 
-    res.cookie(
-      "accessToken",
-      result.accessToken,
-      accessTokenCookieOptions
-    );
-
-    res.cookie(
-      "refreshToken",
-      result.refreshToken,
-      refreshTokenCookieOptions
-    );
+    res.cookie("accessToken", result.accessToken, accessTokenCookieOptions);
+    res.cookie("refreshToken", result.refreshToken, refreshTokenCookieOptions);
 
     return res.status(200).json({
       success: true,

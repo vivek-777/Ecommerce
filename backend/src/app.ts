@@ -9,9 +9,10 @@ import { errorMiddleware } from "./middlewares/error.middleware.js";
 
 const app = express();
 
+// Helmet configuration
 app.use(helmet());
 
-
+//CORS configuration  
 app.use(
   cors({
     origin: env.frontendUrl,
@@ -21,7 +22,10 @@ app.use(
   })
 );
 
+//Express middleware configuration
 app.use(express.json());
+
+// Cookie parser configuration
 app.use(cookieParser());
 
 app.use("/api/auth", authRoutes);
