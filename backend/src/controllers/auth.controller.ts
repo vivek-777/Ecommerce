@@ -2,6 +2,7 @@ import type { Request, Response, NextFunction } from "express";
 
 import * as authService from "../services/auth.service.js";
 import { AppError } from "../errors/AppError.js";
+import { env } from "../config/env.js";
 
 const accessTokenCookieOptions = {
   httpOnly: true,
@@ -58,6 +59,39 @@ export async function login(
         user: result.user,
       },
     });
+  } catch (error) {
+    next(error);
+  }
+}
+
+export function googleAuth(req: Request, res: Response, next: NextFunction) {
+  try {
+    const authUrl = authService.getGoogleAuthUrl();
+    res.redirect(authUrl);
+  } catch (error) {
+    next(error);
+  }
+}
+
+export async function googleCallback(
+  req: Request,
+  res: Response,
+  next: NextFunction
+) {
+  try {
+
+    const { code } = req.query;
+
+    if(!code || typeof code !== "string") {
+      throw new AppError(400, "Authorization code is missing", "MISSING_CODE");
+    }
+
+    const result = await authService.handleGoogleCallback(code);
+    
+    res.cookie("accessToken", result.accessToken, accessTokenCookieOptions);
+    res.cookie("refreshToken", result.refreshToken, refreshTokenCookieOptions);
+
+    return res.redirect(`${env.frontendUrl}/dashboard`);
   } catch (error) {
     next(error);
   }

@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import Image from "next/image";
 import { useRouter } from "next/navigation";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -20,6 +21,7 @@ const LoginForm = () => {
     handleSubmit,
     formState: { errors, isSubmitting }
   } = useForm<LoginFormData>({ resolver: zodResolver(loginSchema), mode: "onBlur" });
+
   const router = useRouter();
 
     const onSubmit = async (data: LoginFormData) => {
@@ -31,6 +33,10 @@ const LoginForm = () => {
         } catch (error) {
             console.error(error);
         }
+    };
+
+    const handleGoogleLogin = () => {
+        window.location.href = `${process.env.NEXT_PUBLIC_API_URL}/api/auth/google`;
     };
 
   return (
@@ -80,9 +86,21 @@ const LoginForm = () => {
                     Login
                 </Button>
             </div>
+            <Button
+                className={styles.googleButton}
+                type="button"
+                onClick={handleGoogleLogin}
+            >
+                <Image
+                    src="/google-oauth.png"
+                    alt="Sign in with Google"
+                    width={180}
+                    height={40}
+                />
+            </Button>
 
             <Link className={styles.link} href="/signup">
-                Don't have an account? Sign up
+                {`Don't have an account? Sign up`}
             </Link>
         </form>
     </main>

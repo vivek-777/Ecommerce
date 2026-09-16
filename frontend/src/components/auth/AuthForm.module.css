@@ -40,6 +40,16 @@
     font-size: 14px;
 }
 
+.googleButton {
+    width: 100%;
+    height: 40px;
+    padding: 0;
+    background: transparent;
+    border: none;
+    cursor: pointer;
+    margin-top: 16px;
+}
+
 @media (max-width: 480px) {
     .container {
         padding: 16px;

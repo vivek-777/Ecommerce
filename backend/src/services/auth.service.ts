@@ -5,6 +5,8 @@ import {
   generateAccessToken,
   generateRefreshToken,
 } from "../utils/jwt.js";
+import { googleOAuthClient } from "../config/google.js";
+import { env } from "../config/env.js";
 
 export async function signup(input: {
   name: string;
@@ -56,7 +58,7 @@ export async function login(input: {
     "+password"
   );
 
-  if (!user) {
+  if (!user || !user.password) {
     throw new AppError(
       401,
       "Invalid email or password",
@@ -77,6 +79,72 @@ export async function login(input: {
     );
   }
 
+  const accessToken = generateAccessToken(user.id);
+  const refreshToken = generateRefreshToken(user.id);
+
+  return {
+    accessToken,
+    refreshToken,
+    user: {
+      id: user.id,
+      name: user.name,
+      email: user.email,
+    },
+  };
+}
+
+export function getGoogleAuthUrl(){
+  return googleOAuthClient.generateAuthUrl({
+    access_type: "offline",
+    scope: ["profile", "email"],
+  });
+};
+
+export async function handleGoogleCallback(code: string) {
+  // 1. Exchange authorization code for Google tokens
+  const { tokens } = await googleOAuthClient.getToken(code);
+
+  if(!tokens) {
+    throw new AppError(
+      400,
+      "Failed to retrieve tokens from Google",
+      "GOOGLE_TOKEN_ERROR"
+    );
+  }
+  
+  // 2. Verify Google ID token
+  const ticket = await googleOAuthClient.verifyIdToken({
+    idToken: tokens.id_token!,
+    audience: env.googleClientId, // Specify the CLIENT_ID of the app that accesses the backend
+  });
+
+  const payload = ticket.getPayload();
+
+  if (!payload || !payload.email) {
+    throw new AppError(
+      400,
+      "Failed to retrieve user information from Google",
+      "GOOGLE_USER_INFO_ERROR"
+    );
+  }
+
+  // 3. Get Google user information
+  const email = payload.email.toLowerCase();
+  const name = payload.name || "Google User";
+  
+  // 4. Find user in MongoDB
+  let user = await UserModel.findOne({ email });
+
+  // 5. Create user if they don't exist
+  if (!user) {
+    user = await UserModel.create({
+      name,
+      email,
+      provider: "google",
+    });
+  }
+
+  // 6. Generate YOUR application's JWT tokens
   const accessToken = generateAccessToken(user.id);
   const refreshToken = generateRefreshToken(user.id);
 
